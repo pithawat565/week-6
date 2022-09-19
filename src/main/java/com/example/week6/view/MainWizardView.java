@@ -1,11 +1,8 @@
 package com.example.week6.view;
 
-
-import com.example.week6.controller.WizardController;
 import com.example.week6.pojo.Wizard;
 import com.example.week6.pojo.Wizards;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.tools.jconsole.JConsoleContext;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Span;
@@ -18,7 +15,6 @@ import com.vaadin.flow.router.Route;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -127,63 +123,60 @@ public class MainWizardView extends VerticalLayout {
                 wizards.setWizards(output);
                 maxLength = wizards.getWizards().size() - 1;
                 index = index > maxLength ? maxLength : index;
+                pageRender(index);
             }
         });
 
 
         create.addClickListener(buttonClickEvent -> {
-            MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-            formData.add("name", fullN.getValue());
-            formData.add("sex", gender.getValue().equals("Male") ? "m" : "f");
-            formData.add("school", school.getValue());
-            formData.add("house", house.getValue());
-            formData.add("money", balance.getValue() + "");
-            formData.add("position", position.getValue());
+            if (!fullN.getValue().equals(null) && balance.getValue() != null && !gender.getValue().equals(null) && !position.getValue().equals(null)) {
+                MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+                formData.add("name", fullN.getValue());
+                formData.add("sex", gender.getValue().equals("Male") ? "m" : "f");
+                formData.add("school", school.getValue());
+                formData.add("house", house.getValue());
+                formData.add("money", balance.getValue() + "");
+                formData.add("position", position.getValue());
 
-            Wizard output = WebClient.create()
-                    .post()
-                    .uri("http://localhost:8080/addWizard")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .body(BodyInserters.fromFormData(formData))
-                    .retrieve()
-                    .bodyToMono(Wizard.class)
-                    .block();
-            wizards.addWizard(output);
-            maxLength = wizards.getWizards().size() - 1;
+                Wizard output = WebClient.create()
+                        .post()
+                        .uri("http://localhost:8080/addWizard")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .body(BodyInserters.fromFormData(formData))
+                        .retrieve()
+                        .bodyToMono(Wizard.class)
+                        .block();
+                wizards.addWizard(output);
+                maxLength = wizards.getWizards().size() - 1;
+            }
         });
 
         next.addClickListener(buttonClickEvent -> {
-            if(index < maxLength) {
-                index++;
-                wizard = mapper.convertValue(wizards.getWizards().get(index), Wizard.class);
-                fullN.setValue(wizard.getName());
-                gender.setValue(wizard.getSex().equals("m") ? "Male" : "Female");
-                position.setValue(wizard.getPosition());
-                balance.setValue(wizard.getMoney());
-                school.setValue(wizard.getSchool());
-                house.setValue(wizard.getHouse());
-            }
+            index = index < maxLength ? index+1 : maxLength;
+            pageRender(index);
         });
         back.addClickListener(event -> {
-            index--;
-            if (index < 0){
-                fullN.setValue("");
-                gender.setValue("");
-                position.setValue("");
-                balance.setValue(null);
-                school.setValue("");
-                house.setValue("");
-                index = -1;
-            }
-            else if(index >= 0){
-                wizard = mapper.convertValue(wizards.getWizards().get(index), Wizard.class);
-                fullN.setValue(wizard.getName());
-                gender.setValue(wizard.getSex().equals("m") ? "Male" : "Female");
-                position.setValue(wizard.getPosition());
-                balance.setValue(wizard.getMoney());
-                school.setValue(wizard.getSchool());
-                house.setValue(wizard.getHouse());
-            }
+            index = index >= 0 ? index-1 : -1;
+            pageRender(index);
         });
+    }
+    public void pageRender(int index){
+        if(index == -1){
+            fullN.setValue("");
+            gender.setValue("");
+            position.setValue("");
+            balance.setValue(null);
+            school.setValue("");
+            house.setValue("");
+        }
+        else {
+            wizard = mapper.convertValue(wizards.getWizards().get(index), Wizard.class);
+            fullN.setValue(wizard.getName());
+            gender.setValue(wizard.getSex().equals("m") ? "Male" : "Female");
+            position.setValue(wizard.getPosition());
+            balance.setValue(wizard.getMoney());
+            school.setValue(wizard.getSchool());
+            house.setValue(wizard.getHouse());
+        }
     }
 }

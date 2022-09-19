@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("Wizard")
 public class Wizard {
     @Id
-    private String _id;
+    private String id;
     private String sex;
     private String name;
     private String school;
@@ -18,7 +18,7 @@ public class Wizard {
     }
 
     public Wizard(String id, String sex, String name, String school, String house, Double money, String position) {
-        this._id = id;
+        this.id = id;
         this.sex = sex;
         this.name = name;
         this.school = school;
@@ -28,7 +28,7 @@ public class Wizard {
     }
 
     public String getId() {
-        return _id;
+        return id;
     }
 
     public String getSex() {
@@ -56,7 +56,7 @@ public class Wizard {
     }
 
     public void setId(String id) {
-        this._id = id;
+        this.id = id;
     }
 
     public void setSex(String sex) {
