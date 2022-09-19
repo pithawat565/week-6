@@ -160,7 +160,7 @@ public class MainWizardView extends VerticalLayout {
             pageRender(index);
         });
     }
-    public void pageRender(int index){
+    public void pageRender(int index) {
         if(index == -1){
             fullN.setValue("");
             gender.setValue("");
