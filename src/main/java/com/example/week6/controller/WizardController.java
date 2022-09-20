@@ -60,7 +60,7 @@ public class WizardController {
     }
 
     @PostMapping (value = "/deleteWizard")
-    public ArrayList<Wizard> deleteWizard(@RequestBody MultiValueMap<String, String> body){
+    public void deleteWizard(@RequestBody MultiValueMap<String, String> body){
         Map<String, String> data = body.toSingleValueMap();
         String id = data.get("id");
         String sex = data.get("sex");
@@ -71,9 +71,7 @@ public class WizardController {
         String position = data.get("position");
 
         Wizard target = new Wizard(id, sex, name, school, house, money, position);
-        boolean status = wizardService.deleteWizard(target);
-        List<Wizard> wizards = wizardService.retrieveWizard();
-        return (ArrayList<Wizard>) wizards;
+        wizardService.deleteWizard(target);
     }
 }
 

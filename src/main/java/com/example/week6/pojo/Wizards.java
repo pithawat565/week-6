@@ -26,9 +26,8 @@ public class Wizards {
         this.wizards.add(wizard);
     }
 
-    public ArrayList<Wizard> deleteWizard(Wizard wizard){
-        this.wizards.remove(wizard);
-        return wizards;
+    public void deleteWizard(int index){
+        this.wizards.remove(index);
     }
 
 }

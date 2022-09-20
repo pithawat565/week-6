@@ -112,7 +112,7 @@ public class MainWizardView extends VerticalLayout {
                 formData.add("money", balance.getValue() + "");
                 formData.add("position", position.getValue());
 
-                ArrayList<Wizard> output = WebClient.create()
+                WebClient.create()
                         .post()
                         .uri("http://localhost:8080/deleteWizard")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -120,7 +120,7 @@ public class MainWizardView extends VerticalLayout {
                         .retrieve()
                         .bodyToMono(ArrayList.class)
                         .block();
-                wizards.setWizards(output);
+                wizards.deleteWizard(index);
                 maxLength = wizards.getWizards().size() - 1;
                 index = index > maxLength ? maxLength : index;
                 pageRender(index);
